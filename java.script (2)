@@ -1,0 +1,25 @@
+async function getCandles(symbol = 'BTCUSDT', tf = '1h') {
+  const res = await fetch(https://api.bitget.com/api/v2/spot/market/candles?symbol=${symbol}&granularity=${tf});
+  const json = await res.json();
+
+  // Bitget data: [ts, open, high, low, close, vol]
+  return json.data.map(c => ({
+    time: Number(c[0]),
+    open: parseFloat(c[1]),
+    high: parseFloat(c[2]),
+    low: parseFloat(c[3]),
+    close: parseFloat(c[4]),
+    volume: parseFloat(c[5])
+  })).reverse(); // oldest first
+}
+
+// Example: SMC BOS check
+async function checkBOS() {
+  const candles = await getCandles('BTCUSDT', '15m');
+  const last = candles[candles.length-1];
+  const prevHigh = Math.max(...candles.slice(-10).map(c=>c.high));
+
+  if(last.close > prevHigh) {
+    console.log("BULLISH BOS detected!"); // මේක තමයි signal
+  }
+}

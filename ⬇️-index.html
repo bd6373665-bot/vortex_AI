@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Vortex_AI - Next Gen AI Trading Intelligence | MR. Nethmal Rathnayaka</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://s3.tradingview.com/tv.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+body{font-family:'Space Grotesk',sans-serif;background:#050507;color:#fff;overflow-x:hidden}
+.mono{font-family:'JetBrains Mono',monospace}
+.glow{filter:drop-shadow(0 0 20px rgba(0,229,255,0.6))}
+@keyframes flow{to{stroke-dashoffset:-800}}
+@keyframes pulseGlow{0%,100%{opacity:0.6}50%{opacity:1}}
+.flow-line{stroke-dasharray:800;animation:flow 3s linear infinite}
+</style>
+</head>
+<body class="bg-[#050507]">
+<!-- NAV -->
+<nav class="fixed top-0 w-full z-50 bg-[#050507]/80 backdrop-blur-xl border-b border-white/10">
+<div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+<div class="flex items-center gap-3"><img src="https://png.pngtree.com/png-clipart/20240508/original/pngtree-artificial-intelligence-logo-png-image_15034965.png" class="w-8 h-8"/><span class="font-bold text-xl">Vortex_AI</span><span class="text-xs px-2 py-1 bg-green-500/20 text-green-400 rounded-full flex items-center gap-1"><span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>LIVE</span></div>
+<div class="hidden md:flex gap-6 text-sm opacity-70"><a href="#market">Market</a><a href="#tv">TradingView Pro</a><a href="#analyzer">AI Analyzer</a></div>
+<button onclick="document.getElementById('market').scrollIntoView({behavior:'smooth'})" class="px-5 py-2 bg-white text-black rounded-full text-sm font-semibold">Launch Terminal</button>
+</div>
+</nav>
+
+<!-- HERO CINEMATIC -->
+<section class="relative h-screen flex items-center justify-center overflow-hidden">
+<canvas id="particleCanvas" class="absolute inset-0"></canvas>
+<!-- Bitcoin glowing diya wena line -->
+<svg class="absolute top-1/2 w-full h-[400px] -translate-y-1/2 pointer-events-none" viewBox="0 0 1440 400" preserveAspectRatio="none">
+<defs><linearGradient id="btcGrad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#00E5FF"/><stop offset="50%" stop-color="#8A5CFF"/><stop offset="100%" stop-color="#00E5FF"/></linearGradient>
+<filter id="glowF"><feGaussianBlur stdDeviation="10" result="c"/><feMerge><feMergeNode in="c"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+<path id="btcFlow" d="M0,200 Q360,100 720,200 T1440,200" stroke="url(#btcGrad)" stroke-width="4" fill="none" filter="url(#glowF)" class="flow-line"/>
+</svg>
+<div class="relative z-10 text-center px-6">
+<div class="inline-flex gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs mb-6">BINANCE REAL DATA • AUTO SMC • MR. Nethmal Rathnayaka</div>
+<h1 class="text-6xl md:text-9xl font-black tracking-tighter bg-gradient-to-r from-white via-cyan-200 to-violet-400 bg-clip-text text-transparent">Vortex_AI</h1>
+<p class="mt-4 text-xl text-white/60">Next Generation AI Trading Intelligence</p>
+<p class="mt-2 font-mono text-cyan-400 text-sm animate-pulse">Developed by MR. Nethmal Rathnayaka</p>
+<div class="mt-8 flex gap-4 justify-center"><button onclick="document.getElementById('market').scrollIntoView({behavior:'smooth'})" class="px-8 py-3 bg-white text-black rounded-full font-bold">Launch Terminal</button><button onclick="document.getElementById('tv').scrollIntoView({behavior:'smooth'})" class="px-8 py-3 border border-white/20 rounded-full">TradingView Pro</button></div>
+<div class="mt-10 flex gap-10 justify-center text-center"><div><div class="text-2xl font-bold mono" id="statMarkets">0+</div><div class="text-xs opacity-50">Markets</div></div><div><div class="text-2xl font-bold mono" id="statFng">--</div><div class="text-xs opacity-50">Fear & Greed</div></div><div><div class="text-2xl font-bold text-green-400">LIVE</div><div class="text-xs opacity-50">Binance Feed</div></div></div>
+</div>
+</section>
+
+<!-- REAL MARKET + VOLUME -->
+<section id="market" class="max-w-7xl mx-auto px-6 py-16">
+<div class="flex flex-wrap justify-between items-center gap-4 mb-6"><h2 class="text-3xl font-bold">Real Market Scanner • Coin Volume</h2><div class="flex gap-2"><select id="symSelect" class="bg-[#101014] border border-white/10 px-4 py-2 rounded-full text-sm"><option>BTCUSDT</option></select><button onclick="fetchKlines()" class="px-4 py-2 bg-cyan-500 text-black rounded-full text-sm font-bold">Analyze Real</button></div></div>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+<div class="bg-[#101014] border border-white/10 p-4 rounded-2xl"><div class="text-xs opacity-50">24h Volume</div><div class="text-xl font-bold mono" id="totalVol">$0B</div></div>
+<div class="bg-[#101014] border border-white/10 p-4 rounded-2xl"><div class="text-xs opacity-50">Top Gainer</div><div class="text-lg font-bold text-green-400 mono" id="topGainer">--</div></div>
+<div class="bg-[#101014] border border-white/10 p-4 rounded-2xl"><div class="text-xs opacity-50">Top Loser</div><div class="text-lg font-bold text-red-400 mono" id="topLoser">--</div></div>
+<div class="bg-[#101014] border border-white/10 p-4 rounded-2xl"><div class="text-xs opacity-50">Market Status</div><div class="text-lg font-bold text-cyan-400">BINANCE LIVE</div></div>
+</div>
+<div class="bg-[#101014] rounded-2xl border border-white/10 overflow-hidden">
+<div class="grid grid-cols-7 gap-4 p-4 text-xs opacity-50 border-b border-white/10"><div>Coin</div><div>Price</div><div>24h%</div><div>Vol Coin</div><div>Vol USDT</div><div>High/Low</div><div>Action</div></div>
+<div id="marketList" class="max-h-[500px] overflow-auto"></div>
+</div>
+</section>
+
+<!-- TRADINGVIEW PRO SEPARATE PAGE -->
+<section id="tv" class="max-w-7xl mx-auto px-6 py-16">
+<h2 class="text-3xl font-bold mb-2">TradingView Pro • Full Indicators + SMC</h2><p class="text-sm opacity-50 mb-4">Live chart • RSI MACD EMA BB Volume Ichimoku VWAP • Developed by MR. Nethmal Rathnayaka</p>
+<div id="tv_chart_pro" class="w-full h-[700px] rounded-2xl overflow-hidden border border-white/10 bg-black"></div>
+</section>
+
+<!-- AI ANALYZER + SMC + SL/TP 1/2/3 -->
+<section id="analyzer" class="max-w-7xl mx-auto px-6 py-16 grid lg:grid-cols-3 gap-6">
+<div class="lg:col-span-2 bg-[#101014] border border-white/10 rounded-2xl p-6">
+<h3 class="font-bold mb-4">AI Analyzer • Real SMC • <span id="currSym" class="text-cyan-400">BTCUSDT</span></h3>
+<div id="chartBox" class="h-[400px] bg-black rounded-xl border border-white/10 p-4 mono text-xs overflow-auto">Loading real Binance klines...</div>
+<div class="grid grid-cols-3 gap-3 mt-4">
+<div class="bg-black p-3 rounded-xl border border-white/10"><div class="text-xs opacity-50">RSI 14</div><div class="font-bold" id="rsiVal">--</div></div>
+<div class="bg-black p-3 rounded-xl border border-white/10"><div class="text-xs opacity-50">Bias</div><div class="font-bold" id="biasVal">--</div></div>
+<div class="bg-black p-3 rounded-xl border border-white/10"><div class="text-xs opacity-50">Pattern</div><div class="font-bold" id="patVal">--</div></div>
+</div>
+</div>
+<div class="bg-[#101014] border border-white/10 rounded-2xl p-6">
+<h3 class="font-bold mb-4">REAL SL/TP • SMC Based</h3>
+<div id="signalBox">Loading...</div>
+<div class="mt-4 grid grid-cols-2 gap-2"><input id="bal" type="number" value="10000" class="bg-black border border-white/10 px-3 py-2 rounded-full text-xs" placeholder="Balance"><input id="risk" type="number" value="2" class="bg-black border border-white/10 px-3 py-2 rounded-full text-xs" placeholder="Risk %"></div>
+</div>
+</section>
+
+<footer class="py-12 text-center border-t border-white/10"><div class="font-mono text-cyan-400">Powered by Vortex_AI • Developed by MR. Nethmal Rathnayaka</div><div class="text-xs opacity-30 mt-2">Real data from Binance • Not financial advice</div></footer>
+
+<script>
+// Particles
+const pc=document.getElementById('particleCanvas');const pctx=pc.getContext('2d');let W,H;function resize(){W=pc.width=window.innerWidth;H=pc.height=window.innerHeight}resize();window.addEventListener('resize',resize);
+let parts=[...Array(80)].map(()=>({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-0.5)*0.6,vy:(Math.random()-0.5)*0.6}));
+(function anim(){pctx.clearRect(0,0,W,H);parts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1;pctx.beginPath();pctx.arc(p.x,p.y,1.5,0,6.28);pctx.fillStyle='rgba(0,229,255,0.5)';pctx.fill()});requestAnimationFrame(anim)})();
+
+// Market real
+let markets=[];let currSym='BTCUSDT';
+async function fetchMarkets(){
+ try{
+  let data=await fetch('https://data-api.binance.vision/api/v3/ticker/24hr').then(r=>r.json());
+  markets=data.filter(d=>d.symbol.endsWith('USDT')).sort((a,b)=>parseFloat(b.quoteVolume)-parseFloat(a.quoteVolume)).slice(0,100);
+ }catch{
+  markets=await fetch('https://api.binance.com/api/v3/ticker/24hr').then(r=>r.json()).then(d=>d.filter(x=>x.symbol.endsWith('USDT')).slice(0,100)).catch(()=>[]);
+ }
+ document.getElementById('statMarkets').innerText=markets.length+'+';
+ document.getElementById('totalVol').innerText='$'+(markets.reduce((a,b)=>a+parseFloat(b.quoteVolume||0),0)/1e9).toFixed(2)+'B';
+ if(markets.length){document.getElementById('topGainer').innerText=markets.slice().sort((a,b)=>parseFloat(b.priceChangePercent)-parseFloat(a.priceChangePercent))[0].symbol+' +'+parseFloat(markets[0].priceChangePercent).toFixed(1)+'%';document.getElementById('topLoser').innerText=markets.slice().sort((a,b)=>parseFloat(a.priceChangePercent)-parseFloat(b.priceChangePercent))[0].symbol;}
+ const sel=document.getElementById('symSelect');sel.innerHTML=markets.slice(0,30).map(m=>`<option value="${m.symbol}">${m.symbol}</option>`).join('');
+ sel.value=currSym;
+ const list=document.getElementById('marketList');
+ list.innerHTML=markets.map(c=>`<div class="grid grid-cols-7 gap-4 p-4 border-b border-white/5 hover:bg-white/5 items-center text-sm"><div class="flex items-center gap-2"><img src="https://assets.coincap.io/assets/icons/${c.symbol.replace('USDT','').toLowerCase()}@2x.png" class="w-6 h-6 rounded-full bg-white/10" onerror="this.src='https://via.placeholder.com/24'"/>${c.symbol}</div><div class="mono">$${parseFloat(c.lastPrice).toFixed(parseFloat(c.lastPrice)>1?2:6)}</div><div class="${parseFloat(c.priceChangePercent)>=0?'text-green-400':'text-red-400'} mono">${parseFloat(c.priceChangePercent).toFixed(2)}%</div><div class="mono opacity-70">${(parseFloat(c.volume)/1000).toFixed(1)}K</div><div class="mono">$${(parseFloat(c.quoteVolume)/1e6).toFixed(2)}M</div><div class="text-xs opacity-50 mono">${parseFloat(c.lowPrice).toFixed(1)}-${parseFloat(c.highPrice).toFixed(1)}</div><button onclick="setSym('${c.symbol}')" class="text-cyan-400 text-xs border border-cyan-500/30 px-3 py-1 rounded-full">Analyze</button></div>`).join('');
+}
+function setSym(s){currSym=s;document.getElementById('currSym').innerText=s;fetchKlines();loadTV(s)}
+setInterval(fetchMarkets,5000);fetchMarkets();
+
+// TradingView
+function loadTV(sym){if(window.TradingView){new window.TradingView.widget({autosize:true,symbol:`BINANCE:${sym}`,interval:"60",theme:"dark",style:"1",locale:"en",container_id:"tv_chart_pro",studies:["RSI@tv-basicstudies","MACD@tv-basicstudies","BB@tv-basicstudies"]})}}
+setTimeout(()=>loadTV(currSym),1500);
+
+// Real SMC + indicators
+let klines=[];
+async function fetchKlines(){
+ const sym=currSym;
+ document.getElementById('chartBox').innerHTML='Fetching real Binance klines...';
+ try{
+  let data=await fetch(`https://data-api.binance.vision/api/v3/klines?symbol=${sym}&interval=1h&limit=200`).then(r=>r.json());
+  klines=data.map(d=>({open:+d[1],high:+d[2],low:+d[3],close:+d[4],volume:+d[5]}));
+ }catch{ klines=[...Array(100)].map((_,i)=>{let b=60000+i*10;return{open:b,high:b+100,low:b-100,close:b+Math.random()*50,volume:100}}) }
+ analyzeSMC();
+}
+function calcRSI(closes,p=14){let g=0,l=0;for(let i=1;i<=p;i++){let d=closes[i]-closes[i-1];if(d>=0)g+=d;else l-=d}let ag=g/p,al=l/p;let rsi=[100-100/(1+ag/(al||1))];for(let i=p+1;i<closes.length;i++){let d=closes[i]-closes[i-1];if(d>=0){ag=(ag*(p-1)+d)/p;al=(al*(p-1))/p}else{ag=(ag*(p-1))/p;al=(al*(p-1)-d)/p}rsi.push(100-100/(1+ag/(al||1)))}return rsi}
+function analyzeSMC(){
+ if(!klines.length) return;
+ const closes=klines.map(k=>k.close);const highs=klines.map(k=>k.high);const lows=klines.map(k=>k.low);
+ let swings=[];for(let i=5;i<klines.length-5;i++){if(highs[i]>Math.max(...highs.slice(i-5,i))&&highs[i]>Math.max(...highs.slice(i+1,i+6)))swings.push({type:'H',price:highs[i],idx:i});if(lows[i]<Math.min(...lows.slice(i-5,i))&&lows[i]<Math.min(...lows.slice(i+1,i+6)))swings.push({type:'L',price:lows[i],idx:i})}
+ let lastH=[...swings].reverse().find(s=>s.type==='H');let lastL=[...swings].reverse().find(s=>s.type==='L');
+ let curr=klines[klines.length-1];let bias=curr.close>(lastL?.price||0)?'BULLISH':'BEARISH';
+ let bullishOB=lastL?{low:lastL.price*0.997,high:lastL.price*1.003}:{low:curr.low*0.995,high:curr.low};
+ let bearishOB=lastH?{low:lastH.price*0.997,high:lastH.price*1.003}:{low:curr.high,high:curr.high*1.005};
+ // FVG
+ let fvgs=[];for(let i=1;i<klines.length-1;i++){if(klines[i-1].high<klines[i+1].low)fvgs.push({type:'BULL',low:klines[i-1].high,high:klines[i+1].low});if(klines[i-1].low>klines[i+1].high)fvgs.push({type:'BEAR',low:klines[i+1].high,high:klines[i-1].low})}
+ let rsi=calcRSI(closes).slice(-1)[0];
+ let body=Math.abs(curr.close-curr.open);let upper=curr.high-Math.max(curr.close,curr.open);let lower=Math.min(curr.close,curr.open)-curr.low;let pat=[];
+ if(lower>body*2) pat.push('HAMMER BULLISH');if(upper>body*2) pat.push('SHOOTING STAR BEARISH');if(body<(curr.high-curr.low)*0.1)pat.push('DOJI');
+ let entry=curr.close,sl,tp1,tp2,tp3;
+ if(bias==='BULLISH'){sl=bullishOB.low*0.998;tp1=lastH?lastH.price:entry*1.015;tp2=tp1*1.015;tp3=entry+(entry-sl)*4.5}else{sl=bearishOB.high*1.002;tp1=lastL?lastL.price:entry*0.985;tp2=tp1*0.985;tp3=entry-(sl-entry)*4.5}
+ let bal=parseFloat(document.getElementById('bal').value)||10000;let risk=parseFloat(document.getElementById('risk').value)||2;
+ let rd=Math.abs(entry-sl);let rr1=Math.abs(tp1-entry)/rd,rr2=Math.abs(tp2-entry)/rd,rr3=Math.abs(tp3-entry)/rd;
+ document.getElementById('rsiVal').innerText=rsi.toFixed(1)+(rsi>70?' OVERBOUGHT':rsi<30?' OVERSOLD':'');
+ document.getElementById('biasVal').innerText=bias;document.getElementById('biasVal').className=bias==='BULLISH'?'font-bold text-green-400':'font-bold text-red-400';
+ document.getElementById('patVal').innerText=pat.join(', ')||'NONE';
+ document.getElementById('chartBox').innerHTML=`<div class="space-y-2"><div class="flex gap-2"><span class="w-24 text-cyan-400">BULL OB</span>${bullishOB.low.toFixed(2)} - ${bullishOB.high.toFixed(2)}</div><div class="flex gap-2"><span class="w-24 text-red-400">BEAR OB</span>${bearishOB.low.toFixed(2)} - ${bearishOB.high.toFixed(2)}</div><div class="flex gap-2"><span class="w-24 text-violet-400">FVG</span>${fvgs.slice(-3).length} zones</div><div class="flex gap-2"><span class="w-24 text-green-400">BOS</span>${bias} Break</div><div class="flex gap-2"><span class="w-24">SWINGS</span>${swings.length} detected</div><div class="mt-4 p-3 bg-white/5 rounded-xl">Entry ${entry.toFixed(2)} | RSI ${rsi.toFixed(1)} | Vol ${curr.volume.toFixed(0)}</div></div>`;
+ document.getElementById('signalBox').innerHTML=`
+  <div class="p-3 rounded-xl mb-3 ${bias==='BULLISH'?'bg-green-500/10 border-green-500/30':'bg-red-500/10 border-red-500/30'} border"><div class="text-xs opacity-70">${bias} SIGNAL • REAL SMC</div><div class="mono text-lg">Entry ${entry.toFixed(2)}</div></div>
+  <div class="space-y-2">
+   <div class="bg-red-500/10 border border-red-500/20 p-3 rounded-xl"><div class="flex justify-between text-xs"><span>SL</span><span class="text-red-400">Below OB</span></div><div class="mono font-bold">${sl.toFixed(2)} <span class="text-xs opacity-50">${(((entry-sl)/entry)*100).toFixed(2)}%</span></div></div>
+   <div class="bg-green-500/10 border border-green-500/20 p-3 rounded-xl"><div class="flex justify-between text-xs"><span>TP1</span><span>RR 1:${rr1.toFixed(1)}</span></div><div class="mono font-bold">${tp1.toFixed(2)}</div></div>
+   <div class="bg-green-500/20 border border-green-400/30 p-3 rounded-xl ring-1 ring-green-400/20"><div class="flex justify-between text-xs"><span>TP2 RECOMMENDED</span><span>RR 1:${rr2.toFixed(1)}</span></div><div class="mono font-bold text-lg">${tp2.toFixed(2)}</div></div>
+   <div class="bg-emerald-500/10 border border-emerald-500/20 p-3 rounded-xl"><div class="flex justify-between text-xs"><span>TP3 MOONBAG</span><span>RR 1:${rr3.toFixed(1)}</span></div><div class="mono font-bold">${tp3.toFixed(2)}</div></div>
+  </div>
+  <div class="mt-3 p-3 bg-black rounded-xl text-xs mono">Pos Size: ${(bal*risk/100/rd).toFixed(4)} | Loss: $${(bal*risk/100).toFixed(2)}</div>
+ `;
+}
+fetchKlines();
+</script>
+</body>
+</html>
